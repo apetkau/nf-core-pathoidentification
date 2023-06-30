@@ -55,6 +55,8 @@ include { FASTP                       } from '../modules/local/fastp'
 //include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
 include { KRAKEN2                     } from '../modules/local/kraken2'
+include { MEGAHIT                     } from '../modules/local/megahit'
+include { QUAST                       } from '../modules/local/quast'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -105,6 +107,14 @@ workflow PATHOIDENTIFICATION {
     KRAKEN2 (
         database=ch_database_k2,
         KAT.out.filtered_reads
+    )
+
+    MEGAHIT (
+        KAT.out.filtered_reads
+    )
+
+    QUAST (
+        MEGAHIT.out.contigs
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
