@@ -1,4 +1,6 @@
 process KAT {
+    label 'process_medium'
+
     conda "bioconda::kat=2.4.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/kat:2.4.2--py39h7c5ebd6_3' :

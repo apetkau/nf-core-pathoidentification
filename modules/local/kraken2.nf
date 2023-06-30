@@ -1,5 +1,6 @@
 process KRAKEN2 {
     publishDir params.outdir, mode:'copy'
+    label 'process_medium'
 
     conda "bioconda::kraken2=2.1.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
