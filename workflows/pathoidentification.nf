@@ -18,6 +18,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.database_kat) { ch_database_kat = file(params.database_kat) } else { exit 1, 'KAT database not specified!' }
 if (params.database_k2) { ch_database_k2 = file(params.database_k2) } else { exit 1, 'Kraken 2 database not specified!' }
+if (params.database_blast) { ch_database_blast = file(params.database_blast) } else { exit 1, 'BLAST database not specified!' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,6 +58,9 @@ include { KAT                         } from '../modules/local/kat'
 include { KRAKEN2                     } from '../modules/local/kraken2'
 include { MEGAHIT                     } from '../modules/local/megahit'
 include { QUAST                       } from '../modules/local/quast'
+include { BLASTDB                     } from '../modules/local/blastdb'
+include { TOPCONTIGS                  } from '../modules/local/topcontigs'
+include { BLAST                       } from '../modules/local/blast'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -115,6 +119,19 @@ workflow PATHOIDENTIFICATION {
 
     QUAST (
         MEGAHIT.out.contigs
+    )
+
+    BLASTDB (
+        ch_database_blast
+    )
+
+    TOPCONTIGS (
+        MEGAHIT.out.contigs
+    )
+
+    BLAST (
+        database=BLASTDB.out.blast_db,
+        contigs=TOPCONTIGS.out.top_contigs
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
