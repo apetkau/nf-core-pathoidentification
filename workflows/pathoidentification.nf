@@ -16,6 +16,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.database_kat) { ch_database_kat = file(params.database_kat) } else { exit 1, 'KAT database not specified!' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,6 +52,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { FASTP                       } from '../modules/local/fastp'
 //include { FASTP                       } from '../modules/nf-core/fastp/main'
+include { KAT                         } from '../modules/local/kat'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -83,12 +85,19 @@ workflow PATHOIDENTIFICATION {
     )
     ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
-
     //
     // MODULE: FastP
     //
     FASTP (
         INPUT_CHECK.out.reads
+    )
+
+    //
+    // MODULE: KAT
+    //
+    KAT (
+        database=ch_database_kat,
+        FASTP.out.cleaned_reads
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
