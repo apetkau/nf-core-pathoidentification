@@ -17,6 +17,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.database_kat) { ch_database_kat = file(params.database_kat) } else { exit 1, 'KAT database not specified!' }
+if (params.database_k2) { ch_database_k2 = file(params.database_k2) } else { exit 1, 'Kraken 2 database not specified!' }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,6 +54,7 @@ include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { FASTP                       } from '../modules/local/fastp'
 //include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
+include { KRAKEN2                     } from '../modules/local/kraken2'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -98,6 +100,11 @@ workflow PATHOIDENTIFICATION {
     KAT (
         database=ch_database_kat,
         FASTP.out.cleaned_reads
+    )
+
+    KRAKEN2 (
+        database=ch_database_k2,
+        KAT.out.filtered_reads
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
