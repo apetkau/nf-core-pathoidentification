@@ -48,18 +48,18 @@
                 },
                 "database_k2": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The path to a directory containing the Kraken2 database.",
                     "help_text": ""
                 },
                 "database_kat": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "The path to the kat database."
                 },
                 "database_blast": {
                     "type": "string",
-                    "default": null,
+                    "default": "None",
                     "description": "Path to a blast fasta file for use as a database."
                 }
             }
