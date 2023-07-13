@@ -52,10 +52,9 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-//include { FASTP                       } from '../modules/local/fastp'
 include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
-include { KRAKEN2                     } from '../modules/local/kraken2'
+include { KRAKEN2_KRAKEN2            } from '../modules/nf-core/kraken2/kraken2/main'
 include { MEGAHIT                     } from '../modules/local/megahit'
 include { QUAST                       } from '../modules/local/quast'
 include { BLASTDB                     } from '../modules/local/blastdb'
@@ -111,9 +110,11 @@ workflow PATHOIDENTIFICATION {
         FASTP.out.reads
     )
 
-    KRAKEN2 (
-        database=ch_database_k2,
-        KAT.out.filtered_reads
+    KRAKEN2_KRAKEN2 (
+        KAT.out.filtered_reads,
+        db=ch_database_k2,
+        save_output_fastqs=false,
+        save_reads_assignment=false
     )
 
     MEGAHIT (
