@@ -8,13 +8,18 @@ process KAT {
 
     input:
     path(database)
-    tuple val(sample_id), path(reads)
+    tuple val(meta), path(reads)
 
     output:
-    tuple val(sample_id), path("filtered.in.R{1,2}.fastq"), emit: filtered_reads
+    tuple val(meta), path("filtered.in.R{1,2}.fastq"), emit: filtered_reads
 
     script:
     """
-    kat filter seq -t $task.cpus -i -o filtered --seq ${reads[0]} --seq2 ${reads[1]} $database
+    # Kat cannot handle gzipped input so use files
+    # to transfer decompressed data
+    gzip -dc ${reads[0]} > reads1.fastq
+    gzip -dc ${reads[1]} > reads2.fastq
+
+    kat filter seq -t ${task.cpus} -i -o filtered --seq reads1.fastq --seq2 reads2.fastq $database
     """
 }

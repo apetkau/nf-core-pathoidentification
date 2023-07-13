@@ -9,14 +9,14 @@ process KRAKEN2 {
 
     input:
     path database
-    tuple val(sample_id), path(reads)
+    tuple val(meta), path(reads)
 
     output:
-    path("${sample_id}.kraken-report.txt")
-    path("${sample_id}.kraken-out.txt")
+    path("${meta.id}.kraken-report.txt")
+    path("${meta.id}.kraken-out.txt")
 
     script:
     """
-    kraken2 --db $database --threads $task.cpus --paired --output ${sample_id}.kraken-out.txt --report ${sample_id}.kraken-report.txt ${reads[0]} ${reads[1]}
+    kraken2 --db $database --threads $task.cpus --paired --output ${meta.id}.kraken-out.txt --report ${meta.id}.kraken-report.txt ${reads[0]} ${reads[1]}
     """
 }

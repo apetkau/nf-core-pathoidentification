@@ -52,8 +52,8 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // MODULE: Installed directly from nf-core/modules
 //
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { FASTP                       } from '../modules/local/fastp'
-//include { FASTP                       } from '../modules/nf-core/fastp/main'
+//include { FASTP                       } from '../modules/local/fastp'
+include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
 include { KRAKEN2                     } from '../modules/local/kraken2'
 include { MEGAHIT                     } from '../modules/local/megahit'
@@ -97,7 +97,10 @@ workflow PATHOIDENTIFICATION {
     // MODULE: FastP
     //
     FASTP (
-        INPUT_CHECK.out.reads
+        INPUT_CHECK.out.reads,
+        adapter_fasta=[],
+        save_trimmed_fail=false,
+        save_merged=false
     )
 
     //
@@ -105,7 +108,7 @@ workflow PATHOIDENTIFICATION {
     //
     KAT (
         database=ch_database_kat,
-        FASTP.out.cleaned_reads
+        FASTP.out.reads
     )
 
     KRAKEN2 (
