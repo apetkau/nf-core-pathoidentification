@@ -1,6 +1,4 @@
 process TOPCONTIGS {
-    label 'process_single'
-
     publishDir params.outdir, mode:'copy'
 
     conda "bioconda::seqkit=2.4.0"

@@ -1,6 +1,4 @@
 process FASTP {
-    label 'process_medium'
-
     publishDir params.outdir, mode:'copy', pattern: "*-fastp.html"
 
     input:

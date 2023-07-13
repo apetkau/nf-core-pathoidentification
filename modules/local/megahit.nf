@@ -1,6 +1,4 @@
 process MEGAHIT {
-   label 'process_medium'
-
     publishDir params.outdir, mode:'copy', pattern: "*-contigs.fasta"
 
     conda "bioconda::megahit=1.2.9"
