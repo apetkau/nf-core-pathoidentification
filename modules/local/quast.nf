@@ -1,4 +1,6 @@
 process QUAST {
+    label 'process_single'
+
     publishDir params.outdir, mode:'copy'
 
     conda "bioconda::quast=5.2.0"

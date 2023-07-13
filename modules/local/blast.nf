@@ -1,4 +1,6 @@
 process BLAST {
+    label 'process_single'
+
     publishDir params.outdir, mode:'copy'
 
     conda "bioconda::blast=2.14.0"
