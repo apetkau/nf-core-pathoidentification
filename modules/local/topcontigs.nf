@@ -9,7 +9,7 @@ process TOPCONTIGS {
         'quay.io/biocontainers/seqkit:2.4.0--h9ee0642_0' }"
 
     input:
-    path(contigs)
+    tuple val(meta), path(contigs)
 
     output:
     path("${contigs}.top.fasta"), emit: top_contigs
