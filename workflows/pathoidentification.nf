@@ -56,7 +56,7 @@ include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
 include { KRAKEN2_KRAKEN2            } from '../modules/nf-core/kraken2/kraken2/main'
 include { MEGAHIT                     } from '../modules/local/megahit'
-include { QUAST                       } from '../modules/local/quast'
+include { QUAST                       } from '../modules/nf-core/quast/main'
 include { BLASTDB                     } from '../modules/local/blastdb'
 include { TOPCONTIGS                  } from '../modules/local/topcontigs'
 include { BLAST                       } from '../modules/local/blast'
@@ -122,7 +122,11 @@ workflow PATHOIDENTIFICATION {
     )
 
     QUAST (
-        MEGAHIT.out.contigs
+        consensus=MEGAHIT.out.contigs,
+        fasta=Channel.empty(),
+        gff=Channel.empty(),
+        use_fasta=false,
+        use_gff=false
     )
 
     BLASTDB (
