@@ -12,7 +12,7 @@ process TOPCONTIGS {
     tuple val(meta), path(contigs)
 
     output:
-    path("${contigs}.top.fasta"), emit: top_contigs
+    tuple val(meta), path("${contigs}.top.fasta"), emit: top_contigs
 
     script:
     """

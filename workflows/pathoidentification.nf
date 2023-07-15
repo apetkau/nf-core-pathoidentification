@@ -54,12 +54,12 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { FASTP                       } from '../modules/nf-core/fastp/main'
 include { KAT                         } from '../modules/local/kat'
-include { KRAKEN2_KRAKEN2            } from '../modules/nf-core/kraken2/kraken2/main'
+include { KRAKEN2_KRAKEN2             } from '../modules/nf-core/kraken2/kraken2/main'
 include { MEGAHIT                     } from '../modules/nf-core/megahit/main'
 include { QUAST                       } from '../modules/nf-core/quast/main'
-include { BLASTDB                     } from '../modules/local/blastdb'
+include { BLAST_MAKEBLASTDB           } from '../modules/nf-core/blast/makeblastdb/main'
 include { TOPCONTIGS                  } from '../modules/local/topcontigs'
-include { BLAST                       } from '../modules/local/blast'
+include { BLAST_BLASTN                } from '../modules/nf-core/blast/blastn'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -129,7 +129,7 @@ workflow PATHOIDENTIFICATION {
         use_gff=false
     )
 
-    BLASTDB (
+    BLAST_MAKEBLASTDB (
         ch_database_blast
     )
 
@@ -137,9 +137,9 @@ workflow PATHOIDENTIFICATION {
         MEGAHIT.out.contigs
     )
 
-    BLAST (
-        database=BLASTDB.out.blast_db,
-        contigs=TOPCONTIGS.out.top_contigs
+    BLAST_BLASTN (
+        TOPCONTIGS.out.top_contigs,
+        BLAST_MAKEBLASTDB.out.db
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
