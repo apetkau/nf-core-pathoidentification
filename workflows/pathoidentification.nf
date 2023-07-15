@@ -101,6 +101,7 @@ workflow PATHOIDENTIFICATION {
         save_trimmed_fail=false,
         save_merged=false
     )
+    ch_versions = ch_versions.mix(FASTP.out.versions.first())
 
     //
     // MODULE: KAT
@@ -116,10 +117,12 @@ workflow PATHOIDENTIFICATION {
         save_output_fastqs=false,
         save_reads_assignment=false
     )
+    ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
 
     MEGAHIT (
         KAT.out.filtered_reads
     )
+    ch_versions = ch_versions.mix(MEGAHIT.out.versions.first())
 
     QUAST (
         consensus=MEGAHIT.out.contigs,
@@ -128,10 +131,12 @@ workflow PATHOIDENTIFICATION {
         use_fasta=false,
         use_gff=false
     )
+    ch_versions = ch_versions.mix(QUAST.out.versions.first())
 
     BLAST_MAKEBLASTDB (
         ch_database_blast
     )
+    ch_versions = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions.first())
 
     TOPCONTIGS (
         MEGAHIT.out.contigs
@@ -141,6 +146,7 @@ workflow PATHOIDENTIFICATION {
         TOPCONTIGS.out.top_contigs,
         BLAST_MAKEBLASTDB.out.db
     )
+    ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
